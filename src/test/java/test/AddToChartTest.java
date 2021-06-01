@@ -48,13 +48,13 @@ public class AddToChartTest extends TestBase {
 
 
     private String authorizationCookie;
-    int quantityOfProduct;
+    private int quantityOfProduct;
 
     @Test
     @Tag("api")
-    @DisplayName("Successful authorization with set cookie, received by API")
+    @DisplayName("Successful adding the product to the chart with set cookie by API and verify by UI")
     void addToChartByNewUserTest() {
-        step("Get cookie by api", () -> {
+        step("Get cookie by API", () -> {
             authorizationCookie =
                     given()
                             .log().uri()
@@ -68,15 +68,11 @@ public class AddToChartTest extends TestBase {
                             .cookie("Nop.customer");
         });
 
-        System.out.println(authorizationCookie);
-
-        step("Get the quantity of product in the chart", () -> {
+        step("Get the quantity of product in the chart by API", () -> {
             String quantityOfProductString =
                     given()
                             .contentType("application/x-www-form-urlencoded; charset=UTF-8")
-                            .log().cookies()
                             .cookie("Nop.customer", authorizationCookie)
-                            .log().cookies()
                             .when()
                             .post("/addproducttocart/catalog/31/1/1")
                             .then()
@@ -87,8 +83,6 @@ public class AddToChartTest extends TestBase {
                             .path("updatetopcartsectionhtml");
             quantityOfProduct = Integer.parseInt(quantityOfProductString.substring(1, quantityOfProductString.length() - 1));
         });
-
-        System.out.println(quantityOfProduct + 1);
 
         step("Add the product in the chart by API", () -> {
             given()
@@ -103,7 +97,7 @@ public class AddToChartTest extends TestBase {
                     .body("updatetopcartsectionhtml", is("(" + (quantityOfProduct + 1) + ")"));
         });
 
-        step("Open minimal content and set the cookie", () -> {
+        step("Open minimal content and set the cookie for UI check", () -> {
             open("/Themes/DefaultClean/Content/images/logo.png");
 
             getWebDriver().manage().addCookie(new Cookie("Nop.customer", authorizationCookie));
