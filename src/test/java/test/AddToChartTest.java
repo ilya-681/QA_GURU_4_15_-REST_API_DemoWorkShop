@@ -1,5 +1,6 @@
 package test;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.Cookie;
 
@@ -24,6 +25,7 @@ public class AddToChartTest extends TestBase {
         step("Get cookie by API", () -> {
             authorizationCookie =
                     given()
+                            .filter(new AllureRestAssured())
                             .log().uri()
                             .contentType("application/x-www-form-urlencoded; charset=UTF-8")
                             .when()
@@ -38,6 +40,7 @@ public class AddToChartTest extends TestBase {
         step("Get the quantity of product in the chart by API", () -> {
             String quantityOfProductString =
                     given()
+                            .filter(new AllureRestAssured())
                             .contentType("application/x-www-form-urlencoded; charset=UTF-8")
                             .cookie("Nop.customer", authorizationCookie)
                             .when()
@@ -53,6 +56,7 @@ public class AddToChartTest extends TestBase {
 
         step("Add the product in the chart by API", () -> {
             given()
+                    .filter(new AllureRestAssured())
                     .contentType("application/x-www-form-urlencoded; charset=UTF-8")
                     .cookie("Nop.customer", authorizationCookie)
                     .when()
